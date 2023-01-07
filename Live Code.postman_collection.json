@@ -1,0 +1,383 @@
+{
+	"info": {
+		"_postman_id": "3bf5163c-25d9-4a9a-ba56-2049c33db518",
+		"name": "Live Code",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16184627"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get All user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"admin\",\r\n    \"rememberMe\": true,\r\n    \"username\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/api/admin/users",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET all CV Admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/api/admin/cvs",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"cvs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CV Admin with id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/api/admin/cvs/23",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"cvs",
+								"23"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update CV Admin",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"user1\",\r\n    \"email\": \"user1@gmail.com\",\r\n    \"mobile\":\"0979326534\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/api/admin/cvs/17",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"cvs",
+								"17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GET all CV with user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/api/cvs",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"api",
+								"cvs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET CV User with id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"email\": \"admin@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/api/cvs/20",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"api",
+								"cvs",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update CV User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":17,    \r\n    \"name\": \"user1\",\r\n    \"email\": \"user1@gmail.com\",\r\n    \"mobile\":\"0979326534\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/api/cvs/17",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"api",
+								"cvs",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete CV User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlBase}}/api/cvs/20",
+							"host": [
+								"{{urlBase}}"
+							],
+							"path": [
+								"api",
+								"cvs",
+								"20"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\":\"mindx\",\r\n    \"password\":\"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlBase}}/api/register",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.response.json().id_token);\r",
+							"pm.environment.set(\"TOKEN\", pm.response.json().id_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"admin\",\r\n    \"rememberMe\": true,\r\n    \"username\": \"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlBase}}/api/authenticate",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"api",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create CV",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"mindx\",\r\n    \"email\": \"mindx@gmail.com\",\r\n    \"mobile\": \"09793263534\",\r\n    \"github\": \"mindx\",\r\n    \"linkedin\": \"mindx\",\r\n    \"short_des\": \"mindx\",\r\n    \"job_title\": \"mindx\",\r\n    \"company\": \"mindx\",\r\n    \"period\": \"mindx\",\r\n    \"job_des\": \"mindx\",\r\n    \"university\": \"mindx\",\r\n    \"gpa\": \"mindx\",\r\n    \"skills\": \"mindx\",\r\n    \"userId\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlBase}}/api/cvs",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"api",
+						"cvs"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
