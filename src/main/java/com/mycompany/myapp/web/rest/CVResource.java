@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.CVRepository;
+import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CVService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.CVDTO;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -84,8 +86,9 @@ public class CVResource {
      * or with status {@code 500 (Internal Server Error)} if the cVDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/cvs/{id}")
-    public ResponseEntity<CVDTO> updateCV(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody CVDTO cVDTO)
+    @PutMapping("/cvs/admin/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<CVDTO> updateCVAdmin(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody CVDTO cVDTO)
         throws URISyntaxException {
         log.debug("REST request to update CV : {}, {}", id, cVDTO);
         if (cVDTO.getId() == null) {
@@ -106,6 +109,33 @@ public class CVResource {
             .body(result);
     }
 
+    @PutMapping("/cvs/{id}")
+    public ResponseEntity<CVDTO> updateCV(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody CVDTO cVDTO)
+        throws URISyntaxException {
+        log.debug("REST request to update CV : {}, {}", id, cVDTO);
+        if (cVDTO.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, cVDTO.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!cVRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        User user = userService.getUserWithAuthorities().get();
+        CVDTO cV = cVService.findOneByUser(id, user.getId()).get();
+        if(cV != null){
+            cVDTO.setUserId(user.getId());
+            CVDTO result = cVService.saveByUser(cVDTO, user.getId());
+            return ResponseEntity
+                .ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, cVDTO.getId().toString()))
+                .body(result);
+        }
+        return ResponseEntity.badRequest().body(cVDTO);
+
+    }
     /**
      * {@code PATCH  /cvs/:id} : Partial updates given fields of an existing cV, field will ignore if it is null
      *
@@ -117,30 +147,30 @@ public class CVResource {
      * or with status {@code 500 (Internal Server Error)} if the cVDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/cvs/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<CVDTO> partialUpdateCV(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody CVDTO cVDTO
-    ) throws URISyntaxException {
-        log.debug("REST request to partial update CV partially : {}, {}", id, cVDTO);
-        if (cVDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, cVDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!cVRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        Optional<CVDTO> result = cVService.partialUpdate(cVDTO);
-
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, cVDTO.getId().toString())
-        );
-    }
+//    @PatchMapping(value = "/cvs/{id}", consumes = { "application/json", "application/merge-patch+json" })
+//    public ResponseEntity<CVDTO> partialUpdateCV(
+//        @PathVariable(value = "id", required = false) final Long id,
+//        @NotNull @RequestBody CVDTO cVDTO
+//    ) throws URISyntaxException {
+//        log.debug("REST request to partial update CV partially : {}, {}", id, cVDTO);
+//        if (cVDTO.getId() == null) {
+//            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+//        }
+//        if (!Objects.equals(id, cVDTO.getId())) {
+//            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+//        }
+//
+//        if (!cVRepository.existsById(id)) {
+//            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+//        }
+//
+//        Optional<CVDTO> result = cVService.partialUpdate(cVDTO);
+//
+//        return ResponseUtil.wrapOrNotFound(
+//            result,
+//            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, cVDTO.getId().toString())
+//        );
+//    }
 
     /**
      * {@code GET  /cvs} : get all the cVS.
@@ -148,10 +178,20 @@ public class CVResource {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of cVS in body.
      */
+    @GetMapping("/admin/cvs")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<List<CVDTO>> getAllCVSAdmin(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+        log.debug("REST request to get a page of CVS");
+        Page<CVDTO> page = cVService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
     @GetMapping("/cvs")
     public ResponseEntity<List<CVDTO>> getAllCVS(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of CVS");
-        Page<CVDTO> page = cVService.findAll(pageable);
+        User user = userService.getUserWithAuthorities().get();
+        Page<CVDTO> page = cVService.findAllByUser(pageable, user.getId());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -162,13 +202,21 @@ public class CVResource {
      * @param id the id of the cVDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the cVDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/cvs/{id}")
-    public ResponseEntity<CVDTO> getCV(@PathVariable Long id) {
+    @GetMapping("/cvs/admin/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<CVDTO> getCVAdmin(@PathVariable Long id) {
         log.debug("REST request to get CV : {}", id);
         Optional<CVDTO> cVDTO = cVService.findOne(id);
         return ResponseUtil.wrapOrNotFound(cVDTO);
     }
 
+    @GetMapping("/cvs/{id}")
+    public ResponseEntity<CVDTO> getCV(@PathVariable Long id) {
+        log.debug("REST request to get CV : {}", id);
+        User user = userService.getUserWithAuthorities().get();
+        Optional<CVDTO> cVDTO = cVService.findOneByUser(id, user.getId());
+        return ResponseUtil.wrapOrNotFound(cVDTO);
+    }
     /**
      * {@code DELETE  /cvs/:id} : delete the "id" cV.
      *
@@ -178,9 +226,17 @@ public class CVResource {
     @DeleteMapping("/cvs/{id}")
     public ResponseEntity<Void> deleteCV(@PathVariable Long id) {
         log.debug("REST request to delete CV : {}", id);
-        cVService.delete(id);
+        User user = userService.getUserWithAuthorities().get();
+        CVDTO cV = cVService.findOneByUser(id, user.getId()).get();
+        if(cV != null){
+            cVService.delete(id);
+            return ResponseEntity
+                .noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+                .build();
+        }
         return ResponseEntity
-            .noContent()
+            .badRequest()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }

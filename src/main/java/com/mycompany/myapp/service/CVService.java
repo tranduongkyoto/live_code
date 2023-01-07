@@ -47,4 +47,10 @@ public interface CVService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    Page<CVDTO> findAllByUser(Pageable pageable, Long id);
+
+    Optional<CVDTO> findOneByUser(Long id, Long userId);
+
+    CVDTO saveByUser(CVDTO cVDTO, Long userId);
 }

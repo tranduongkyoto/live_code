@@ -1,8 +1,10 @@
 package com.mycompany.myapp.service.impl;
 
 import com.mycompany.myapp.domain.CV;
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.CVRepository;
 import com.mycompany.myapp.service.CVService;
+import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.CVDTO;
 import com.mycompany.myapp.service.mapper.CVMapper;
 import java.util.Optional;
@@ -26,9 +28,12 @@ public class CVServiceImpl implements CVService {
 
     private final CVMapper cVMapper;
 
-    public CVServiceImpl(CVRepository cVRepository, CVMapper cVMapper) {
+    private final UserService userService;
+
+    public CVServiceImpl(CVRepository cVRepository, CVMapper cVMapper, UserService userService) {
         this.cVRepository = cVRepository;
         this.cVMapper = cVMapper;
+        this.userService = userService;
     }
 
     @Override
@@ -58,8 +63,10 @@ public class CVServiceImpl implements CVService {
     @Transactional(readOnly = true)
     public Page<CVDTO> findAll(Pageable pageable) {
         log.debug("Request to get all CVS");
+        User user = userService.getUserWithAuthorities().get();
         return cVRepository.findAll(pageable).map(cVMapper::toDto);
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -72,5 +79,27 @@ public class CVServiceImpl implements CVService {
     public void delete(Long id) {
         log.debug("Request to delete CV : {}", id);
         cVRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<CVDTO> findAllByUser(Pageable pageable, Long id) {
+        log.debug("Request to get all CVS");
+        User user = userService.getUserWithAuthorities().get();
+        return cVRepository.findAllByUser(pageable, id).map(cVMapper::toDto);
+    }
+
+    @Override
+    public Optional<CVDTO> findOneByUser(Long id, Long userId) {
+        log.debug("Request to get CV : {}", id);
+        return cVRepository.findByIdByUser(id, userId).map(cVMapper::toDto);
+    }
+
+    @Override
+    public CVDTO saveByUser(CVDTO cVDTO, Long userId) {
+        log.debug("Request to save CV : {}", cVDTO);
+
+        CV cV = cVMapper.toEntity(cVDTO);
+        cV = cVRepository.save(cV);
+        return cVMapper.toDto(cV);
     }
 }
