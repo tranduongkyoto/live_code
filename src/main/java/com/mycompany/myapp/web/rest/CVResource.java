@@ -86,7 +86,7 @@ public class CVResource {
      * or with status {@code 500 (Internal Server Error)} if the cVDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/cvs/admin/{id}")
+    @PutMapping("/admin/cvs/{id}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<CVDTO> updateCVAdmin(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody CVDTO cVDTO)
         throws URISyntaxException {
@@ -202,7 +202,7 @@ public class CVResource {
      * @param id the id of the cVDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the cVDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/cvs/admin/{id}")
+    @GetMapping("/admin/cvs/{id}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<CVDTO> getCVAdmin(@PathVariable Long id) {
         log.debug("REST request to get CV : {}", id);
