@@ -52,6 +52,16 @@ public class CVDTO implements Serializable {
     @Size(min = 5, max = 100)
     private String skills;
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    private Long userId;
+
     public Long getId() {
         return id;
     }

@@ -1,7 +1,9 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.CVRepository;
 import com.mycompany.myapp.service.CVService;
+import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.CVDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -17,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,9 +44,12 @@ public class CVResource {
 
     private final CVRepository cVRepository;
 
-    public CVResource(CVService cVService, CVRepository cVRepository) {
+    private final UserService userService;
+
+    public CVResource(CVService cVService, CVRepository cVRepository, UserService userService) {
         this.cVService = cVService;
         this.cVRepository = cVRepository;
+        this.userService = userService;
     }
 
     /**
@@ -61,6 +65,8 @@ public class CVResource {
         if (cVDTO.getId() != null) {
             throw new BadRequestAlertException("A new cV cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        User user = userService.getUserWithAuthorities().get();
+        cVDTO.setUserId(user.getId());
         CVDTO result = cVService.save(cVDTO);
         return ResponseEntity
             .created(new URI("/api/cvs/" + result.getId()))

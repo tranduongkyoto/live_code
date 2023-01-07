@@ -72,6 +72,18 @@ public class CV implements Serializable {
     @Column(name = "skills", length = 100)
     private String skills;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
